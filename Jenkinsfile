@@ -8,18 +8,19 @@ pipeline {
         }
         stage('Install Dependencies') {
             steps {
-                sh 'pip3 install flask'
+                sh ''' python3 -m venv venv
+                ./venv/bin/pip install flask '''
             }
         }
 
         stage('test') {
             steps {
-                sh 'python3 -m py_compile app.py'
+                sh './venv/bin/python -m py_compile app.py'
             }
         }
         stage('build') {
             steps {
-                sh 'python3 app.py &'
+                sh 'nohup ./venv/bin/python app.py > app.log 2>&1 &'
                 sleep 5
                 sh 'curl http://localhost:5000'
             }
